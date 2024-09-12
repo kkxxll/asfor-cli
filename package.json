@@ -1,0 +1,17 @@
+{
+  "name": "asfor-cli",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "asfor": "asfor",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@asfor-cli/cli": "workspace:*",
+    "@asfor-cli/utils": "workspace:*"
+  }
+}
