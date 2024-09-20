@@ -1,7 +1,7 @@
 {
-  "name": "@asfor-cli/command",
+  "name": "@asfor-cli/init",
   "version": "0.0.0",
-  "description": "command",
+  "description": "init command",
   "author": "fflinkexin <fflinkexin@chinatelecom.cn>",
   "homepage": "https://github.com/kkxxll/asfor-cli#readme",
   "license": "ISC",
@@ -13,14 +13,17 @@
   "files": [
     "lib"
   ],
-  "repository": {
+  "repository": { 
     "type": "git",
     "url": "git+https://github.com/kkxxll/asfor-cli.git"
   },
   "scripts": {
-    "test": "node ./__tests__/command.test.js"
+    "test": "node ./__tests__/init.test.js"
   },
   "bugs": {
     "url": "https://github.com/kkxxll/asfor-cli/issues"
+  },
+  "dependencies": {
+    "@asfor-cli/command": "^0.0.0"
   }
 }
