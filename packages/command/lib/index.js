@@ -8,7 +8,6 @@ class Command {
     const cmd = this.program.command(this.command);
 
     cmd.description(this.description);
-    
 
     if (this.options?.length > 0) {
       this.options.forEach((option) => {
@@ -16,15 +15,14 @@ class Command {
       });
     }
 
-    
-    cmd.action((name, opts) => {
-      console.log(name, opts);
+    cmd.action((...params) => {
+      this.action(params);
     });
   }
 
   get command() {
     // command 必须实现
-    console.log(arguments)
+    console.log(arguments);
     throw new Error("command must be implemented");
   }
   get description() {
@@ -32,12 +30,10 @@ class Command {
   }
 
   get options() {
-    return [
-      ["-f, --force", "是否强制创建", false],
-    ];
+    return [];
   }
 
-  get action() {
+  action() {
     throw new Error("action must be implemented");
   }
 }

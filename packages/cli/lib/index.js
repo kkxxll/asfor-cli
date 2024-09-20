@@ -10,16 +10,7 @@ module.exports = function (args) {
     .version(pkg.version)
     .option("-d, --debug", "是否开启调试模式", false);
 
-    createInitCommand(program)
-    
-  // program
-  //   .command("init <name>")
-  //   .description("创建一个项目")
-  //   .option("-f, --force", "是否强制创建", false)
-  //   // .action(require("./create"));
-  //   .action((name, opts) => {
-  //     console.log(name, opts);
-  //   });
+  createInitCommand(program);
 
   program.parse(process.argv);
 };

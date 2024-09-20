@@ -9,7 +9,16 @@ class InitCommand extends Command {
   get description() {
     return 'init project'
   }
-  
+
+  get options() {
+    return [
+      ["-f, --force", "是否强制创建", false],
+    ];
+  }
+
+  action([name, opts]) {
+    console.log('init', name, opts)
+  }
 }
 
 function Init(instance) {
