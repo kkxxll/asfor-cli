@@ -2,8 +2,10 @@ const commander = require("commander");
 const { program } = commander;
 const pkg = require("../package.json");
 const createInitCommand = require("@asfor-cli/init");
+const { log } = require("@asfor-cli/utils");
 
 module.exports = function (args) {
+  log.success('version', pkg.version)
   program
     .name(Object.keys(pkg.bin)[0])
     .usage("<command> [options]")

@@ -1,7 +1,7 @@
 {
-  "name": "utils",
+  "name": "@asfor-cli/utils",
   "version": "0.0.0",
-  "description": "> TODO: description",
+  "description": "utils",
   "author": "fflinkexin <fflinkexin@chinatelecom.cn>",
   "homepage": "https://github.com/kkxxll/asfor-cli#readme",
   "license": "ISC",
@@ -22,5 +22,8 @@
   },
   "bugs": {
     "url": "https://github.com/kkxxll/asfor-cli/issues"
+  },
+  "dependencies": {
+    "npmlog": "^7.0.1"
   }
 }

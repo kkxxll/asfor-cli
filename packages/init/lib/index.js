@@ -1,6 +1,7 @@
 "use strict";
 
 const Command = require("@asfor-cli/command");
+const { log } = require("@asfor-cli/utils");
 
 class InitCommand extends Command {
   get command() {
@@ -17,7 +18,7 @@ class InitCommand extends Command {
   }
 
   action([name, opts]) {
-    console.log('init', name, opts)
+    log.verbose('init', name, opts)
   }
 }
 

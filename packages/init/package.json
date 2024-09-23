@@ -13,7 +13,7 @@
   "files": [
     "lib"
   ],
-  "repository": { 
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/kkxxll/asfor-cli.git"
   },
@@ -24,6 +24,7 @@
     "url": "https://github.com/kkxxll/asfor-cli/issues"
   },
   "dependencies": {
-    "@asfor-cli/command": "^0.0.0"
+    "@asfor-cli/command": "^0.0.0",
+    "@asfor-cli/utils": "^0.0.0"
   }
 }

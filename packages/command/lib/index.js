@@ -46,11 +46,9 @@ class Command {
 
   preAction() {
     // empty
-    console.log('preAction')
   }
   
   postAction() {
-    console.log('postAction')
     // empty
   }
 }
