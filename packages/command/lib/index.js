@@ -9,6 +9,13 @@ class Command {
 
     cmd.description(this.description);
 
+    cmd.hook("preAction", () => {
+      this.preAction();
+    });
+    cmd.hook("postAction", () => {
+      this.preAction();
+    });
+
     if (this.options?.length > 0) {
       this.options.forEach((option) => {
         cmd.option(...option);
@@ -35,6 +42,16 @@ class Command {
 
   action() {
     throw new Error("action must be implemented");
+  }
+
+  preAction() {
+    // empty
+    console.log('preAction')
+  }
+  
+  postAction() {
+    console.log('postAction')
+    // empty
   }
 }
 
