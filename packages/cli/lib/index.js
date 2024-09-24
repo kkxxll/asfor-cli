@@ -18,6 +18,11 @@ function preAction() {
   checkNodeVersion();
 }
 
+process.on('uncaughtException', (e) => {
+  // 全局的异常捕获，只抛出异常信息里面的message
+  console.log(e.message)
+})
+
 module.exports = function (args) {
   log.success("version", pkg.version);
   program
