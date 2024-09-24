@@ -1,12 +1,17 @@
 #!/usr/bin/env node
 
-const importLocal = require("import-local");
-const { log } = require("@asfor-cli/utils");
+import importLocal from "import-local";
+import { log } from "@asfor-cli/utils";
 
-const entry = require("../lib/index");
+import { fileURLToPath } from "node:url";
+
+import entry from "../lib/index.js";
+
+const __filename = fileURLToPath(import.meta.url);
 
 if (importLocal(__filename)) {
   log.info("cli", "using local version of cli");
 } else {
+  console.log('1', __filename)
   entry(process.argv.slice(2));
 }

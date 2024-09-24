@@ -1,5 +1,5 @@
-const log = require("npmlog");
-const isDebug = require("./isDebug.js");
+import log from "npmlog";
+import isDebug from "./isDebug.js";
 
 if (isDebug()) {
   log.level = "verbose";
@@ -10,4 +10,4 @@ if (isDebug()) {
 log.heading = "asfor";
 log.addLevel("success", 2000, { fg: "green", bold: true });
 
-module.exports = log;
+export default log;

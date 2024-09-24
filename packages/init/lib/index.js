@@ -1,7 +1,7 @@
 "use strict";
 
-const Command = require("@asfor-cli/command");
-const { log } = require("@asfor-cli/utils");
+import Command from "@asfor-cli/command";
+import { log } from "@asfor-cli/utils";
 
 class InitCommand extends Command {
   get command() {
@@ -26,4 +26,4 @@ function Init(instance) {
   return new InitCommand(instance);
 }
 
-module.exports = Init;
+export default Init;

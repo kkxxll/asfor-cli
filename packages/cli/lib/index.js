@@ -1,12 +1,17 @@
-const commander = require("commander");
-const pkg = require("../package.json");
-const semver = require("semver");
-const chalk = require("chalk");
-const { program } = commander;
-const { log, isDebug } = require("@asfor-cli/utils");
-const createInitCommand = require("@asfor-cli/init");
+import { program } from "commander";
+import path from "node:path";
+import { dirname } from "dirname-filename-esm";
+import fse from "fs-extra";
+import semver from "semver";
+import chalk from "chalk";
 
-const LOWEST_NODE_VERSION = "20.0.0";
+import { log, isDebug } from "@asfor-cli/utils";
+import createInitCommand from "@asfor-cli/init";
+
+const __dirName = dirname(import.meta);
+const pkgPath = path.resolve(__dirName, "../package.json");
+const pkg = fse.readJSONSync(pkgPath)
+const LOWEST_NODE_VERSION = "14.0.0";
 
 function checkNodeVersion() {
   log.verbose("node version", process.version);
@@ -30,7 +35,7 @@ process.on("uncaughtException", (e) => {
   }
 });
 
-module.exports = function (args) {
+export default function (args) {
   log.success("version", pkg.version);
   program
     .name(Object.keys(pkg.bin)[0])
@@ -42,4 +47,4 @@ module.exports = function (args) {
   createInitCommand(program);
 
   program.parse(process.argv);
-};
+}
