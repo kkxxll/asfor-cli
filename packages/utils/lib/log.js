@@ -1,12 +1,13 @@
 const log = require("npmlog");
+const isDebug = require("./isDebug.js");
 
-if (process.argv.includes('--debug') || process.argv.includes('-d')) {
-  log.level = 'verbose'
+if (isDebug()) {
+  log.level = "verbose";
 } else {
-  log.level = 'info'
+  log.level = "info";
 }
 
-log.heading = 'asfor'
-log.addLevel('success', 2000, { fg: 'green', bold: true })
+log.heading = "asfor";
+log.addLevel("success", 2000, { fg: "green", bold: true });
 
 module.exports = log;

@@ -1,7 +1,9 @@
-'use strict';
+"use strict";
 
-const log = require('./log')
+const log = require("./log");
+const isDebug = require("./isDebug");
 
 module.exports = {
-  log
-}
+  log,
+  isDebug,
+};
