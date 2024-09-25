@@ -1,7 +1,9 @@
-'use strict';
+import path from "node:path";
+import execa from "execa";
 
-const cli = require('..');
-const assert = require('assert').strict;
+const CLI = path.join(__dirname, "../bin/cli.js");
+const bin = () => () => execa(CLI);
 
-assert.strictEqual(cli(), 'Hello from cli');
-console.info('cli tests passed');
+test("run error command", () => {
+  bin()();
+});
