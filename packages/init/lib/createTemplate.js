@@ -7,11 +7,13 @@ const ADD_TEMPLATE = [
   {
     name: "vue3",
     npmName: "@asfor-cli/template-vue3",
+    value: "template-vue3",
     version: "0.0.1",
   },
   {
     name: "react18",
     npmName: "@asfor-cli/template-react18",
+    value: "template-react18",
     version: "0.0.1",
   },
 ];
@@ -42,6 +44,13 @@ function getAddName() {
   });
 }
 
+function getAddTemplate() {
+  return makeList({
+    choices: ADD_TEMPLATE,
+    message: "请选择模板",
+  });
+}
+
 export default async function createTemplate(name, opts) {
   const addType = await getAddType();
   log.verbose("addType", addType);
@@ -49,5 +58,14 @@ export default async function createTemplate(name, opts) {
   if (addType === ADD_TYPE_PROJECT) {
     const addName = await getAddName();
     log.verbose("addName", addName);
+    const addTemplate = await getAddTemplate();
+    log.verbose("addTemplate", addTemplate);
+    const selectTemplate = ADD_TEMPLATE.find((_) => _.value === addTemplate);
+    log.verbose("selectTemplate", selectTemplate);
+    return {
+      type: addType,
+      name: addName,
+      template: selectTemplate,
+    };
   }
 }
