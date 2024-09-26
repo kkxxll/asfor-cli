@@ -1,4 +1,4 @@
-import { log, makeInput, makeList } from "@asfor-cli/utils";
+import { log, makeInput, makeList, getLatestVersion } from "@asfor-cli/utils";
 
 const ADD_TYPE_PROJECT = "project";
 const ADD_TYPE_PAGE = "page";
@@ -62,6 +62,13 @@ export default async function createTemplate(name, opts) {
     log.verbose("addTemplate", addTemplate);
     const selectTemplate = ADD_TEMPLATE.find((_) => _.value === addTemplate);
     log.verbose("selectTemplate", selectTemplate);
+
+    // 获取最新版本号
+    const latestVersion = await getLatestVersion(selectTemplate.npmName);
+    selectTemplate.version = latestVersion;
+
+    log.verbose("latestVersion", latestVersion);
+
     return {
       type: addType,
       name: addName,
