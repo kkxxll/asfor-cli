@@ -2,6 +2,7 @@ import path from "node:path";
 import { pathExistsSync } from "path-exists";
 import fse from "fs-extra";
 import ora from "ora";
+import { printErrorLog, log } from "@asfor-cli/utils";
 function getCacheDir(targetPath) {
   return path.resolve(targetPath, "node_modules");
 }
@@ -9,11 +10,7 @@ function getCacheDir(targetPath) {
 function makeCacheDir(targetPath) {
   const cacheDir = getCacheDir(targetPath);
   if (!pathExistsSync(cacheDir)) {
-    try {
-      fse.mkdirSync(cacheDir);
-    } catch (error) {
-      console.log(error)
-    }
+    fse.mkdirpSync(cacheDir);
   }
 }
 
@@ -25,8 +22,9 @@ export default function downloadTemplate(selectTemplate) {
     setTimeout(() => {
       spinner.stop();
     }, 2000);
+    log.success("download success");
   } catch (error) {
     spinner.stop();
-
+    printErrorLog(error);
   }
 }
