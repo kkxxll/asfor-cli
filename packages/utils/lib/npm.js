@@ -3,10 +3,10 @@ import axios from "axios";
 import log from "./log.js";
 
 function getNpmInfo(npmName) {
-  // const cnpm = 'https://registry.npm.taobao.org'
+  const cnpm = 'https://registry.npmmirror.com'
   const registryUrl = "https://registry.npmjs.org";
 
-  const url = urlJoin(registryUrl, npmName);
+  const url = urlJoin(cnpm, npmName);
 
   return axios.get(url).then((res) => {
     try {
