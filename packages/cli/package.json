@@ -39,7 +39,9 @@
     "semver": "^7.6.3"
   },
   "devDependencies": {
-    "execa": "^9.4.0",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "execa": "^6.1.0",
     "jest": "^29.7.0"
   }
 }
