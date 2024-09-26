@@ -1,8 +1,9 @@
+import { homedir } from "node:os";
+import path from "node:path";
 import { log, makeInput, makeList, getLatestVersion } from "@asfor-cli/utils";
 
 const ADD_TYPE_PROJECT = "project";
 const ADD_TYPE_PAGE = "page";
-
 const ADD_TEMPLATE = [
   {
     name: "vue3",
@@ -17,7 +18,6 @@ const ADD_TEMPLATE = [
     version: "0.0.1",
   },
 ];
-
 const ADD_TYPE = [
   {
     name: "项目",
@@ -28,6 +28,8 @@ const ADD_TYPE = [
     value: ADD_TYPE_PAGE,
   },
 ];
+// 缓存目录
+const TEMP_HOME = ".asfor";
 
 function getAddType() {
   return makeList({
@@ -50,6 +52,9 @@ function getAddTemplate() {
     message: "请选择模板",
   });
 }
+function makeTargetPath() {
+  return path.resolve(`${homedir()}/${TEMP_HOME}`, "addTemplate");
+}
 
 export default async function createTemplate(name, opts) {
   const addType = await getAddType();
@@ -65,14 +70,15 @@ export default async function createTemplate(name, opts) {
 
     // 获取最新版本号
     const latestVersion = await getLatestVersion(selectTemplate.npmName);
-    selectTemplate.version = latestVersion;
-
     log.verbose("latestVersion", latestVersion);
+    selectTemplate.version = latestVersion;
+    const targetPath = makeTargetPath(name);
 
     return {
       type: addType,
       name: addName,
       template: selectTemplate,
+      targetPath,
     };
   }
 }
