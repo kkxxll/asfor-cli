@@ -2,6 +2,7 @@
 
 import Command from "@asfor-cli/command";
 import { log } from "@asfor-cli/utils";
+import createTemplate from "./createTemplate.js";
 
 class InitCommand extends Command {
   get command() {
@@ -17,8 +18,12 @@ class InitCommand extends Command {
     ];
   }
 
-  action([name, opts]) {
+  async action([name, opts]) {
     log.verbose('init', name, opts)
+    await createTemplate(name, opts);
+    // 选模板 生成项目信息
+    // 下载项目模板至缓存
+    // 安装项目模板至项目目录
   }
 }
 

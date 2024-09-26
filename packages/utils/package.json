@@ -25,6 +25,7 @@
     "url": "https://github.com/kkxxll/asfor-cli/issues"
   },
   "dependencies": {
+    "inquirer": "^11.0.2",
     "npmlog": "^7.0.1"
   }
 }
