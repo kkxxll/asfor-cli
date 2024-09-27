@@ -47,7 +47,7 @@ function getAddName() {
       if (!v) {
         return "项目名称不能为空";
       }
-      return true
+      return true;
     },
   });
 }
@@ -63,22 +63,29 @@ function makeTargetPath() {
 }
 
 export default async function createTemplate(name, opts) {
-  const addType = await getAddType();
+  const { type = null, template = null } = opts;
+  log.verbose("name", name);
+  log.verbose("opts", opts);
+  const addType = type || await getAddType();
   log.verbose("addType", addType);
 
   if (addType === ADD_TYPE_PROJECT) {
-    const addName = await getAddName();
+    const addName = name || await getAddName();
     log.verbose("addName", addName);
-    const addTemplate = await getAddTemplate();
+    const addTemplate = template || await getAddTemplate();
     log.verbose("addTemplate", addTemplate);
     const selectTemplate = ADD_TEMPLATE.find((_) => _.value === addTemplate);
     log.verbose("selectTemplate", selectTemplate);
+
+    if (!selectTemplate) {
+      throw new Error("模板不存在");
+    }
 
     // 获取最新版本号
     const latestVersion = await getLatestVersion(selectTemplate.npmName);
     log.verbose("latestVersion", latestVersion);
     selectTemplate.version = latestVersion;
-    const targetPath = makeTargetPath(name);
+    const targetPath = makeTargetPath(addName);
 
     return {
       type: addType,
@@ -86,5 +93,7 @@ export default async function createTemplate(name, opts) {
       template: selectTemplate,
       targetPath,
     };
+  } else {
+    throw new Error('暂不支持该功能')
   }
 }

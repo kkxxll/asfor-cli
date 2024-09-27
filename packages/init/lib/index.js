@@ -15,7 +15,11 @@ class InitCommand extends Command {
   }
 
   get options() {
-    return [["-f, --force", "是否强制创建", false]];
+    return [
+      ["-f, --force", "是否强制创建", false],
+      ["-t, --type <type>", "项目类型(project/page)"],
+      ["-tpl, --template <template>", "模板名称"],
+    ];
   }
 
   async action([name, opts]) {
@@ -28,7 +32,7 @@ class InitCommand extends Command {
     await downloadTemplate(selectTemplate);
 
     // 3.安装项目模板至项目目录
-    await installTemplate(selectTemplate, opts)
+    await installTemplate(selectTemplate, opts);
   }
 }
 
