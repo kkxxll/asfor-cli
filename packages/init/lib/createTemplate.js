@@ -1,23 +1,10 @@
 import { homedir } from "node:os";
 import path from "node:path";
-import { log, makeInput, makeList, getLatestVersion } from "@asfor-cli/utils";
+import { log, makeInput, makeList, getLatestVersion, request } from "@asfor-cli/utils";
 
 const ADD_TYPE_PROJECT = "project";
 const ADD_TYPE_PAGE = "page";
-const ADD_TEMPLATE = [
-  {
-    name: "vue3",
-    npmName: "@asfor-cli/template-vue3",
-    value: "template-vue3",
-    version: "0.0.1",
-  },
-  {
-    name: "react18",
-    npmName: "@asfor-cli/template-react18",
-    value: "template-react18",
-    version: "0.0.1",
-  },
-];
+
 const ADD_TYPE = [
   {
     name: "项目",
@@ -52,9 +39,9 @@ function getAddName() {
   });
 }
 
-function getAddTemplate() {
+function getAddTemplate(list) {
   return makeList({
-    choices: ADD_TEMPLATE,
+    choices: list,
     message: "请选择模板",
   });
 }
@@ -62,7 +49,24 @@ function makeTargetPath() {
   return path.resolve(`${homedir()}/${TEMP_HOME}`, "addTemplate");
 }
 
+
+// 通过API获取项目模板
+async function getTemplateFromAPI() {
+  try {
+    const data = await request({
+      url: '/project/template',
+      method: 'get',
+    });
+    log.verbose('api template', data);
+    return data;
+  } catch (e) {
+    printErrorLog(e);
+    return null;
+  }
+} 
+
 export default async function createTemplate(name, opts) {
+  const ADD_TEMPLATE = await getTemplateFromAPI()
   const { type = null, template = null } = opts;
   log.verbose("name", name);
   log.verbose("opts", opts);
@@ -72,7 +76,7 @@ export default async function createTemplate(name, opts) {
   if (addType === ADD_TYPE_PROJECT) {
     const addName = name || await getAddName();
     log.verbose("addName", addName);
-    const addTemplate = template || await getAddTemplate();
+    const addTemplate = template || await getAddTemplate(ADD_TEMPLATE);
     log.verbose("addTemplate", addTemplate);
     const selectTemplate = ADD_TEMPLATE.find((_) => _.value === addTemplate);
     log.verbose("selectTemplate", selectTemplate);
