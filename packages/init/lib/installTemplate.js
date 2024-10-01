@@ -20,18 +20,25 @@ function copyFile(targetPath, template, installDir) {
   spinner.succeed('copy template success')
 }
 
-function ejsRender(installDir) {
+function ejsRender(installDir, template, name) {
+  log.verbose('ejsRender', installDir, template);
+  const { ignore, value } = template;
+
+  const ejsData = {
+    data: {
+      name, // 项目名称
+      // ...data,
+    }
+  }
+  
   glob('**', {
     cwd: installDir,
     nodir: true,
     ignore: [
-      '**/public/**',
+      ...ignore,
       '**/node_modules/**',
     ],
   }, (err, files) => {
-    const ejsData = {
-      name: 'test'
-    }
     files.forEach(file => {
       const filePath = path.join(installDir, file);
       log.verbose('filePath', filePath);
@@ -72,6 +79,6 @@ export default function installTemplate(selectedTemplate, opts) {
   }
   copyFile(targetPath, template, installDir);
 
-  ejsRender(installDir)
+  ejsRender(installDir, template, name)
 
 }

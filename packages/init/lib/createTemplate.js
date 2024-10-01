@@ -94,12 +94,10 @@ export default async function createTemplate(name, opts) {
     
     log.verbose("addTemplate", addTemplate);
     const selectTemplate = ADD_TEMPLATE.find((_) => _.value === addTemplate);
-    log.verbose("selectTemplate", selectTemplate);
 
     if (!selectTemplate) {
       throw new Error("模板不存在");
     }
-
     // 获取最新版本号
     const latestVersion = await getLatestVersion(selectTemplate.npmName);
     log.verbose("latestVersion", latestVersion);
