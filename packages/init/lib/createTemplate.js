@@ -49,6 +49,13 @@ function makeTargetPath() {
   return path.resolve(`${homedir()}/${TEMP_HOME}`, "addTemplate");
 }
 
+function getAddTeam(team) {
+  return makeList({
+    choices: team.map(item => ({ name: item, value: item })),
+    message: '请选择团队',
+  })
+}
+
 
 // 通过API获取项目模板
 async function getTemplateFromAPI() {
@@ -76,7 +83,15 @@ export default async function createTemplate(name, opts) {
   if (addType === ADD_TYPE_PROJECT) {
     const addName = name || await getAddName();
     log.verbose("addName", addName);
-    const addTemplate = template || await getAddTemplate(ADD_TEMPLATE);
+    
+    let teamList = ADD_TEMPLATE.map(_ => _.team)
+    teamList = [...new Set(teamList)]
+    const addTeam = await getAddTeam(teamList)
+    log.verbose("addTeam", addTeam);
+    
+    const addTemplate = template || await getAddTemplate(ADD_TEMPLATE.filter(_ => _.team === addTeam));
+
+    
     log.verbose("addTemplate", addTemplate);
     const selectTemplate = ADD_TEMPLATE.find((_) => _.value === addTemplate);
     log.verbose("selectTemplate", selectTemplate);
