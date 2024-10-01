@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://m.kkk.com:7001'
+const BASE_URL = 'http://127.0.0.1:7001'
 
 const service = axios.create({
   baseURL: BASE_URL,

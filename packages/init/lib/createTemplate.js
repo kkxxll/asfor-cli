@@ -1,6 +1,6 @@
 import { homedir } from "node:os";
 import path from "node:path";
-import { log, makeInput, makeList, getLatestVersion, request } from "@asfor-cli/utils";
+import { log, makeInput, makeList, getLatestVersion, request, printErrorLog } from "@asfor-cli/utils";
 
 const ADD_TYPE_PROJECT = "project";
 const ADD_TYPE_PAGE = "page";
@@ -54,7 +54,7 @@ function makeTargetPath() {
 async function getTemplateFromAPI() {
   try {
     const data = await request({
-      url: '/project/template',
+      url: '/v1/project',
       method: 'get',
     });
     log.verbose('api template', data);
