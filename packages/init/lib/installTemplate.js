@@ -3,6 +3,8 @@ import fse from "fs-extra";
 import { pathExistsSync } from "path-exists";
 import { log } from "@asfor-cli/utils";
 import ora from "ora";
+import glob from 'glob'
+import ejs from 'ejs'
 
 function getCacheFilePath(targetPath, template) {
   return path.resolve(targetPath, "node_modules", template.npmName, 'template');
@@ -16,6 +18,32 @@ function copyFile(targetPath, template, installDir) {
   })
   spinner.stop()
   spinner.succeed('copy template success')
+}
+
+function ejsRender(installDir) {
+  glob('**', {
+    cwd: installDir,
+    nodir: true,
+    ignore: [
+      '**/public/**',
+      '**/node_modules/**',
+    ],
+  }, (err, files) => {
+    const ejsData = {
+      name: 'test'
+    }
+    files.forEach(file => {
+      const filePath = path.join(installDir, file);
+      log.verbose('filePath', filePath);
+      ejs.renderFile(filePath, ejsData, (err, result) => {
+        if (!err) {
+          fse.writeFileSync(filePath, result);
+        } else {
+          log.error(err);
+        }
+      });
+    });
+  });
 }
 
 export default function installTemplate(selectedTemplate, opts) {
@@ -43,4 +71,7 @@ export default function installTemplate(selectedTemplate, opts) {
     fse.ensureDirSync(installDir);
   }
   copyFile(targetPath, template, installDir);
+
+  ejsRender(installDir)
+
 }
