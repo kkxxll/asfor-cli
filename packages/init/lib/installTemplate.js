@@ -1,7 +1,7 @@
 import path from "node:path";
 import fse from "fs-extra";
 import { pathExistsSync } from "path-exists";
-import { log } from "@asfor-cli/utils";
+import { log, makeList, makeInput } from "@asfor-cli/utils";
 import ora from "ora";
 import glob from 'glob'
 import ejs from 'ejs'
@@ -9,6 +9,11 @@ import ejs from 'ejs'
 function getCacheFilePath(targetPath, template) {
   return path.resolve(targetPath, "node_modules", template.npmName, 'template');
 }
+
+function getPluginFilePath(targetPath, template) {
+  return path.resolve(targetPath, 'node_modules', template.npmName, 'plugins', 'index.js');
+}
+
 function copyFile(targetPath, template, installDir) {
   const originFile = getCacheFilePath(targetPath, template);
   const fileList = fse.readdirSync(originFile)
@@ -20,16 +25,46 @@ function copyFile(targetPath, template, installDir) {
   spinner.succeed('copy template success')
 }
 
-function ejsRender(installDir, template, name) {
+async function ejsRender(targetPath, installDir, template, name) {
   log.verbose('ejsRender', installDir, template);
-  const { ignore, value } = template;
-
+  const { ignore } = template;
+  // 执行插件
+  let data = {};
+  const pluginPath = getPluginFilePath(targetPath, template);
+  if (pathExistsSync(pluginPath)) {
+    const pluginFn = (await import(pluginPath)).default;
+    const api = {
+      makeList,
+      makeInput,
+    }
+    data = await pluginFn(api);
+  }
   const ejsData = {
     data: {
       name, // 项目名称
-      // ...data,
+      ...data,
     }
   }
+  glob('**', {
+    cwd: installDir,
+    nodir: true,
+    ignore: [
+      ...ignore,
+      '**/node_modules/**',
+    ],
+  }, (err, files) => {
+    files.forEach(file => {
+      const filePath = path.join(installDir, file);
+      log.verbose('filePath', filePath);
+      ejs.renderFile(filePath, ejsData, (err, result) => {
+        if (!err) {
+          fse.writeFileSync(filePath, result);
+        } else {
+          log.error(err);
+        }
+      });
+    });
+  });
   
   glob('**', {
     cwd: installDir,
@@ -53,7 +88,7 @@ function ejsRender(installDir, template, name) {
   });
 }
 
-export default function installTemplate(selectedTemplate, opts) {
+export default async function installTemplate(selectedTemplate, opts) {
   const { force = false } = opts;
   const { targetPath, template, name } = selectedTemplate;
   const rootDir = process.cwd();
@@ -79,6 +114,6 @@ export default function installTemplate(selectedTemplate, opts) {
   }
   copyFile(targetPath, template, installDir);
 
-  ejsRender(installDir, template, name)
+  await ejsRender(targetPath, installDir, template, name)
 
 }
