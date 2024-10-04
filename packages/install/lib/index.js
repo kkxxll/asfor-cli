@@ -4,6 +4,8 @@ import { log, Github, Gitee, makeList, getGitPlatform, makeInput } from "@asfor-
 
 const PREV_PAGE = '${prev_page}'
 const NEXT_PAGE = '${next_page}'
+const SEARCH_MODE_REPO = 'search_repo'
+const SEARCH_MODE_CODE = 'search_code'
 
 class InstallCommand extends Command {
   get command() {
@@ -67,13 +69,24 @@ class InstallCommand extends Command {
         per_page: this.perPage,
         page: this.page,
       }
-      searchResult = await this.gitAPI.searchRepositories(params)
+
       log.verbose('search params:', params)
-      count = searchResult.total_count
-      list = searchResult.items.map(item => ({
-        name: `${item.full_name}(${item.description})`,
-        value: item.full_name
-      }))
+
+      
+      if (this.mode === SEARCH_MODE_REPO) {
+        searchResult = await this.gitAPI.searchRepositories(params)
+        count = searchResult.total_count
+        list = searchResult.items.map(item => ({
+          name: `${item.full_name}(${item.description})`,
+          value: item.full_name
+        }))
+      } else {
+        searchResult = await this.gitAPI.searchCode(params)
+        list = searchResult.items.map(item => ({
+          name: `${item.repository.full_name}(${item.repository.description || ''})`,
+          value: item.repository.full_name
+        }))
+      }
     }
 
     if (this.page * this.perPage < count) {
@@ -104,6 +117,25 @@ class InstallCommand extends Command {
   }
 
   async searchGitAPI() {
+    const platform = this.gitAPI.getPlatform()
+
+    if (platform === 'github') {
+      this.mode = await makeList({
+        message: '请选择搜索模式',
+        choices: [
+          {
+            name: '仓库',
+            value: SEARCH_MODE_REPO
+          },
+          {
+            name: '代码',
+            value: SEARCH_MODE_CODE
+          }
+        ]
+      })
+    } else {
+      this.mode = SEARCH_MODE_REPO
+    }
 
     this.q = await makeInput({
       message: '请输入搜索关键字',
@@ -120,7 +152,9 @@ class InstallCommand extends Command {
       message: '请输入开发语言'
     })
 
-    log.verbose('search keyword:', this.q, this.language)
+    log.verbose('search keyword:', this.q, this.language, platform)
+
+
     this.page = 1
     this.perPage = 10
     await this.doSearch()
