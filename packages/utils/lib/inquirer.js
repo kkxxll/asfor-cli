@@ -36,3 +36,7 @@ export function makeList(params) {
 export function makeInput(params) {
   return make({ ...params, type: "input" });
 }
+
+export function makePassword(params) {
+  return make({ ...params, type: "password" });
+}
