@@ -1,6 +1,6 @@
 "use strict";
 import Command from "@asfor-cli/command";
-import { log, Github, makeList, getGitPlatform } from "@asfor-cli/utils";
+import { log, Github, Gitee, makeList, getGitPlatform } from "@asfor-cli/utils";
 
 class InstallCommand extends Command {
   get command() {
@@ -36,16 +36,24 @@ class InstallCommand extends Command {
     if (platform === 'github') {
       gitAPI = new Github();
     } else {
-
+      gitAPI = new Gitee()
     }
 
     gitAPI.savePlatform(platform)
     await gitAPI.init()
+    // const searchResult = await gitAPI.searchRepositories({
+    //   q: 'vue+language:vue',
+    //   order: 'desc',
+    //   sort: 'stars',
+    //   per_page: 5,
+    //   page: 1
+    // })
     const searchResult = await gitAPI.searchRepositories({
-      q: 'vue+language:vue',
+      q: 'vue',
+      language: 'JavaScript',
       order: 'desc',
-      sort: 'stars',
-      per_page: 5,
+      sort: 'stars_count', 
+      per_page: 10,
       page: 1
     })
     console.log('searchResult', searchResult)
