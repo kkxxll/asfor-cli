@@ -1,12 +1,11 @@
 {
-  "name": "@asfor-cli/init",
+  "name": "@asfor-cli/lint",
   "version": "0.0.0",
-  "description": "init command",
+  "description": "> TODO: description",
   "author": "kkxxll",
   "homepage": "https://github.com/kkxxll/asfor-cli#readme",
   "license": "ISC",
   "main": "lib/index.js",
-  "type": "module",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -19,19 +18,9 @@
     "url": "git+https://github.com/kkxxll/asfor-cli.git"
   },
   "scripts": {
-    "test": "node ./__tests__/init.test.js"
+    "test": "node ./__tests__/lint.test.js"
   },
   "bugs": {
     "url": "https://github.com/kkxxll/asfor-cli/issues"
-  },
-  "dependencies": {
-    "@asfor-cli/command": "workspace:*",
-    "@asfor-cli/utils": "workspace:*",
-    "ejs": "^3.1.10",
-    "execa": "^9.4.0",
-    "fs-extra": "^11.2.0",
-    "glob": "^8.0.3",
-    "ora": "^8.1.0",
-    "path-exists": "^5.0.0"
   }
 }

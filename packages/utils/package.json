@@ -2,7 +2,7 @@
   "name": "@asfor-cli/utils",
   "version": "0.0.0",
   "description": "utils",
-  "author": "fflinkexin <fflinkexin@chinatelecom.cn>",
+  "author": "kkxxll",
   "homepage": "https://github.com/kkxxll/asfor-cli#readme",
   "license": "ISC",
   "main": "lib/index.js",
