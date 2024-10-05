@@ -57,7 +57,7 @@ class InstallCommand extends Command {
 
     let searchResult
     let count
-    let list
+    let list = []
 
     const platform = this.gitAPI.getPlatform()
     if (platform === 'github') {
@@ -72,7 +72,7 @@ class InstallCommand extends Command {
 
       log.verbose('search params:', params)
 
-      
+
       if (this.mode === SEARCH_MODE_REPO) {
         searchResult = await this.gitAPI.searchRepositories(params)
         count = searchResult.total_count
@@ -87,6 +87,24 @@ class InstallCommand extends Command {
           value: item.repository.full_name
         }))
       }
+    } else {
+      const params = {
+        q: this.q,
+        order: 'desc',
+        // sort: 'stars_count',
+        per_page: this.perPage,
+        page: this.page,
+      };
+      if (this.language) {
+        params.language = this.language; // 注意输入格式：JavaScript
+      }
+      searchResult = await this.gitAPI.searchRepositories(params)
+      count = 99999
+      list = searchResult.map(item => ({
+        name: `${item.full_name}(${item.description})`,
+        value: item.full_name
+      }))
+      console.log(searchResult)
     }
 
     if (this.page * this.perPage < count) {
@@ -102,18 +120,22 @@ class InstallCommand extends Command {
       })
     }
 
-    const keyword = await makeList({
-      message: `请选择要下载的项目 （共 ${count}条数据）`,
-      choices: list
-    })
+    if (count > 0) {
+      const keyword = await makeList({
+        message: platform === 'gitnub'? `请选择要下载的项目 （共 ${count}条数据）` :  '请选择要下载的项目',
+        choices: list
+      })
 
-    if (keyword === NEXT_PAGE) {
-      this.nextPage()
-    } else if (keyword === PREV_PAGE) {
-      this.prevPage()
-    } else {
-      // 下载
+      if (keyword === NEXT_PAGE) {
+        this.nextPage()
+      } else if (keyword === PREV_PAGE) {
+        this.prevPage()
+      } else {
+        // 下载
+        this.keyword = keyword
+      }
     }
+
   }
 
   async searchGitAPI() {
