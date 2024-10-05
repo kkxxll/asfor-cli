@@ -1,6 +1,7 @@
 "use strict";
+import ora from 'ora'
 import Command from "@asfor-cli/command";
-import { log, Github, Gitee, makeList, getGitPlatform, makeInput } from "@asfor-cli/utils";
+import { log, Github, Gitee, makeList, getGitPlatform, makeInput, printErrorLog } from "@asfor-cli/utils";
 
 const PREV_PAGE = '${prev_page}'
 const NEXT_PAGE = '${next_page}'
@@ -22,7 +23,54 @@ class InstallCommand extends Command {
   async action([name, opts]) {
     await this.generrateAPI()
     await this.searchGitAPI()
+    log.verbose('full_name', this.keyword);
+    
+    if (!this.keyword) {
+      return
+    }
+    
     await this.selectTags()
+    log.verbose('selected_tag', this.selectedTag);
+    
+    if (!this.selectedTag) {
+      return
+    }
+    
+    await this.downloadRepo();
+    await this.installDependencies();
+    await this.runRepo();
+  }
+
+  async runRepo() {
+    await this.gitAPI.runRepo(process.cwd(), this.keyword);
+  }
+
+  async downloadRepo() {
+    const spinner = ora(`正在下载: ${this.keyword}(${this.selectedTag})`).start();
+    try {
+      await this.gitAPI.cloneRepo(this.keyword, this.selectedTag);
+      spinner.stop();
+      log.success(`下载成功: ${this.keyword}(${this.selectedTag})`);
+    } catch (e) {
+      spinner.stop();
+      printErrorLog(e);
+    }
+  }
+
+  async installDependencies() {
+    const spinner = ora(`正在安装依赖: ${this.keyword}(${this.selectedTag})`).start();
+    try {
+      const ret = await this.gitAPI.installDependencies(process.cwd(), this.keyword, this.selectedTag);
+      spinner.stop();
+      if (!ret) {
+        log.error(`依赖安装失败: ${this.keyword}(${this.selectedTag})`);
+      } else {
+        log.success(`依赖安装成功: ${this.keyword}(${this.selectedTag})`);
+      }
+    } catch (e) {
+      spinner.stop();
+      printErrorLog(e);
+    }
   }
 
   async generrateAPI() {
@@ -190,11 +238,9 @@ class InstallCommand extends Command {
     await this.doSearch()
   }
   async selectTags() {
-    if (this.keyword) {
-      this.tagPage = 1;
-      this.tagPerPage = 30;
-      tagsList = await this.doSelectTags();
-    }
+    this.tagPage = 1;
+    this.tagPerPage = 30;
+    await this.doSelectTags();
   }
 
   async doSelectTags() {

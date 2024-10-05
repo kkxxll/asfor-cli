@@ -22,5 +22,8 @@
   },
   "bugs": {
     "url": "https://github.com/kkxxll/asfor-cli/issues"
+  },
+  "dependencies": {
+    "ora": "^8.1.0"
   }
 }
