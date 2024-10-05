@@ -55,14 +55,11 @@ class InstallCommand extends Command {
     this.gitAPI = gitAPI
   }
   async doSearch() {
-
     let searchResult
-    let count
+    let count = 0
     let list = []
-
     const platform = this.gitAPI.getPlatform()
     if (platform === 'github') {
-
       const params = {
         q: this.q + (this.language ? `+language:${this.language}` : ''),
         order: 'desc',
@@ -70,13 +67,10 @@ class InstallCommand extends Command {
         per_page: this.perPage,
         page: this.page,
       }
-
       log.verbose('search params:', params)
-
-
+      // github
       if (this.mode === SEARCH_MODE_REPO) {
         searchResult = await this.gitAPI.searchRepositories(params)
-        count = searchResult.total_count
         list = searchResult.items.map(item => ({
           name: `${item.full_name}(${item.description})`,
           value: item.full_name
@@ -84,11 +78,13 @@ class InstallCommand extends Command {
       } else {
         searchResult = await this.gitAPI.searchCode(params)
         list = searchResult.items.map(item => ({
-          name: `${item.repository.full_name}(${item.repository.description || ''})`,
+          name: item.repository.full_name + (item.repository.description ? `(${item.repository.description})` : ''),
           value: item.repository.full_name
         }))
       }
+      count = searchResult.total_count; // 整体数据量
     } else {
+      // gitee
       const params = {
         q: this.q,
         order: 'desc',
@@ -99,44 +95,44 @@ class InstallCommand extends Command {
       if (this.language) {
         params.language = this.language; // 注意输入格式：JavaScript
       }
-      searchResult = await this.gitAPI.searchRepositories(params)
-      count = 99999
+      log.verbose('search params', params);
+      searchResult = await this.gitAPI.searchRepositories(params);
+      count = 9999999;
       list = searchResult.map(item => ({
         name: `${item.full_name}(${item.description})`,
         value: item.full_name
       }))
-      console.log(searchResult)
     }
 
-    if (this.page * this.perPage < count) {
+    // 判断当前页面，已经是否到达最大页数
+    if ((platform === 'github' && this.page * this.perPage < count) || list.length > 0) {
       list.push({
         name: '下一页',
-        value: NEXT_PAGE
-      })
+        value: NEXT_PAGE,
+      });
     }
     if (this.page > 1) {
       list.unshift({
         name: '上一页',
-        value: PREV_PAGE
-      })
+        value: PREV_PAGE,
+      });
     }
 
-    if (count > 0) {
+    if (count > 0 && list.length) {
       const keyword = await makeList({
-        message: platform === 'gitnub' ? `请选择要下载的项目 （共 ${count}条数据）` : '请选择要下载的项目',
-        choices: list
-      })
+        message: platform === 'github' ? `请选择要下载的项目（共${count}条数据）` : '请选择要下载的项目',
+        choices: list,
+      });
 
       if (keyword === NEXT_PAGE) {
-        this.nextPage()
+        await this.nextPage();
       } else if (keyword === PREV_PAGE) {
-        this.prevPage()
+        await this.prevPage();
       } else {
-        // 下载
-        this.keyword = keyword
+        // 下载项目
+        this.keyword = keyword;
       }
     }
-
   }
 
   async searchGitAPI() {
@@ -194,10 +190,11 @@ class InstallCommand extends Command {
     await this.doSearch()
   }
   async selectTags() {
-    let tagsList;
-    this.tagPage = 1;
-    this.tagPerPage = 30;
-    tagsList = await this.doSelectTags();
+    if (this.keyword) {
+      this.tagPage = 1;
+      this.tagPerPage = 30;
+      tagsList = await this.doSelectTags();
+    }
   }
 
   async doSelectTags() {

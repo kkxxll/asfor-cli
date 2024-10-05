@@ -19,24 +19,72 @@ class Gitee extends GitServer {
 
   }
   get(url, params, headers) {
-    console.log(url, params)
     return this.service({
       url,
-      method: 'get',
       params: {
         ...params,
-        access_token: this.token
+        access_token: this.token,
       },
-      headers
-    })
+      method: 'get',
+      headers,
+    });
   }
 
-  post() {
-    
+  post(url, data, headers) {
+    return this.service({
+      url,
+      data,
+      params: {
+        access_token: this.token,
+      },
+      method: 'post',
+      headers,
+    });
   }
 
   searchRepositories(params) {
     return this.get('search/repositories', params)
+  }
+
+  // example: https://gitee.com/api/v5/repos/zhijiantianya/ruoyi-vue-pro/tags
+  getTags(fullName) {
+    return this.get(`/repos/${fullName}/tags`);
+  }
+
+  getRepoUrl(fullName) {
+    // https://gitee.com/imooc-project/commit-test.git
+    return `https://gitee.com/${fullName}.git`;
+  }
+
+  getUser() {
+    return this.get('/user');
+  }
+
+  getOrg() {
+    return this.get('/user/orgs');
+  }
+
+  getRepo(owner, repo) {
+    return this.get(`/repos/${owner}/${repo}`).catch(err => {
+      return null;
+    });
+  }
+
+  async createRepo(name) {
+    // 检查远程仓库是否存在，如果存在，则跳过创建
+    const repo = await this.getRepo(this.login, name);
+    if (!repo) {
+      log.info('仓库不存在，开始创建');
+      if (this.own === 'user') {
+        return this.post('/user/repos', { name });
+      } else if (this.own === 'org') {
+        const url = 'orgs/' + this.login + '/repos';
+        return this.post(url, { name });
+      }
+    } else {
+      log.info('仓库存在，直接返回');
+      return repo;
+    }
   }
 }
 
