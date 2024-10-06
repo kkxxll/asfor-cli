@@ -20,6 +20,9 @@ importers:
       '@asfor-cli/install':
         specifier: workspace:*
         version: link:../install
+      '@asfor-cli/lint':
+        specifier: workspace:*
+        version: link:../lint
       '@asfor-cli/utils':
         specifier: workspace:*
         version: link:../utils
@@ -84,19 +87,41 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
 
-  packages/install: {}
+  packages/install:
+    dependencies:
+      ora:
+        specifier: ^8.1.0
+        version: 8.1.0
+
+  packages/lint:
+    dependencies:
+      '@asfor-cli/command':
+        specifier: workspace:*
+        version: link:../command
+      '@asfor-cli/utils':
+        specifier: workspace:*
+        version: link:../utils
 
   packages/utils:
     dependencies:
       axios:
         specifier: ^1.7.7
         version: 1.7.7
+      execa:
+        specifier: ^9.4.0
+        version: 9.4.0
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.2.0
       inquirer:
         specifier: ^11.0.2
         version: 11.1.0
       npmlog:
         specifier: ^7.0.1
         version: 7.0.1
+      path-exists:
+        specifier: ^5.0.0
+        version: 5.0.0
       url-join:
         specifier: ^5.0.0
         version: 5.0.0
