@@ -7,8 +7,8 @@ import { ESLint } from 'eslint';
 import ora from 'ora';
 import vueConfig from './eslint/vueConfig.js';
 import { execa } from 'execa';
-// import jest from 'jest';
-// import Mocha from 'mocha';
+import jest from 'jest';
+import Mocha from 'mocha';
 
 class LintCommand extends Command {
   get command() {
@@ -81,56 +81,56 @@ class LintCommand extends Command {
 
   async autoTest() {
     // 执行自动化测试之前，让用户选择采用哪种方法进行测试
-    // const cwd = process.cwd();
-    // let testMode;
-    // const imoocConfigFile = path.resolve(cwd, '.cli-imooc');
-    // let config;
-    // if (fs.existsSync(imoocConfigFile)) {
-    //   config = fse.readJsonSync(imoocConfigFile);
-    //   testMode = config.testMode;
-    //   if (!testMode) {
-    //     testMode = await makeList({
-    //       message: '请选择自动化测试方法',
-    //       choices: [
-    //         { name: 'jest', value: 'jest' },
-    //         { name: 'mocha', value: 'mocha' },
-    //       ]
-    //     });
-    //     config.testMode = testMode;
-    //     fse.writeJsonSync(imoocConfigFile, config);
-    //   }
-    // } else {
-    //   testMode = await makeList({
-    //     message: '请选择自动化测试方法',
-    //     choices: [
-    //       { name: 'jest', value: 'jest' },
-    //       { name: 'mocha', value: 'mocha' },
-    //     ]
-    //   });
-    //   fse.writeJsonSync(imoocConfigFile, {
-    //     testMode,
-    //   });
-    // }
-    // if (testMode === 'jest') {
-    //   // 2. jest
-    //   log.info('自动执行jest测试');
-    //   await jest.run('test');
-    //   log.success('jest测试执行完毕');
-    // } else {
-    //   // 3. mocha
-    //   log.info('自动执行mocha测试');
-    //   const mochaInstance = new Mocha();
-    //   mochaInstance.addFile(path.resolve(cwd, '__tests__/mocha_test.js'));
-    //   mochaInstance.run(() => {
-    //     log.success('mocha测试执行完毕');
-    //   });
-    // }
+    const cwd = process.cwd();
+    let testMode;
+    const asforConfigFile = path.resolve(cwd, '.asforTest');
+    let config;
+    if (fs.existsSync(asforConfigFile)) {
+      config = fse.readJsonSync(asforConfigFile);
+      testMode = config.testMode;
+      if (!testMode) {
+        testMode = await makeList({
+          message: '请选择自动化测试方法',
+          choices: [
+            { name: 'jest', value: 'jest' },
+            { name: 'mocha', value: 'mocha' },
+          ]
+        });
+        config.testMode = testMode;
+        fse.writeJsonSync(asforConfigFile, config);
+      }
+    } else {
+      testMode = await makeList({
+        message: '请选择自动化测试方法',
+        choices: [
+          { name: 'jest', value: 'jest' },
+          { name: 'mocha', value: 'mocha' },
+        ]
+      });
+      fse.writeJsonSync(asforConfigFile, {
+        testMode,
+      });
+    }
+    if (testMode === 'jest') {
+      // 2. jest
+      log.info('自动执行jest测试');
+      await jest.run('test');
+      log.success('jest测试执行完毕');
+    } else {
+      // 3. mocha
+      log.info('自动执行mocha测试');
+      const mochaInstance = new Mocha();
+      mochaInstance.addFile(path.resolve(cwd, '__tests__/mocha_test.js'));
+      mochaInstance.run(() => {
+        log.success('mocha测试执行完毕');
+      });
+    }
   }
 
   async action() {
     log.verbose('lint');
-    await this.eslint();
-    // await this.autoTest();
+    // await this.eslint();
+    await this.autoTest();
   }
 }
 
