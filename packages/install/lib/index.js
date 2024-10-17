@@ -1,7 +1,7 @@
 "use strict";
 import ora from 'ora'
 import Command from "@asfor-cli/command";
-import { log, Github, Gitee, makeList, getGitPlatform, makeInput, printErrorLog } from "@asfor-cli/utils";
+import { log, makeList, makeInput, printErrorLog, initGitServer } from "@asfor-cli/utils";
 
 const PREV_PAGE = '${prev_page}'
 const NEXT_PAGE = '${next_page}'
@@ -24,18 +24,18 @@ class InstallCommand extends Command {
     await this.generrateAPI()
     await this.searchGitAPI()
     log.verbose('full_name', this.keyword);
-    
+
     if (!this.keyword) {
       return
     }
-    
+
     await this.selectTags()
     log.verbose('selected_tag', this.selectedTag);
-    
+
     if (!this.selectedTag) {
       return
     }
-    
+
     await this.downloadRepo();
     await this.installDependencies();
     await this.runRepo();
@@ -74,33 +74,7 @@ class InstallCommand extends Command {
   }
 
   async generrateAPI() {
-    let platform = getGitPlatform()
-    if (!platform) {
-      platform = await makeList({
-        message: '请选择Git平台',
-        choices: [
-          {
-            name: 'github',
-            value: 'github'
-          },
-          {
-            name: 'gitee',
-            value: 'gitee'
-          }
-        ]
-      })
-    }
-    log.verbose('platform', platform)
-    let gitAPI
-    if (platform === 'github') {
-      gitAPI = new Github();
-    } else {
-      gitAPI = new Gitee()
-    }
-
-    gitAPI.savePlatform(platform)
-    await gitAPI.init()
-    this.gitAPI = gitAPI
+    this.gitAPI = await initGitServer();
   }
   async doSearch() {
     let searchResult
@@ -146,6 +120,9 @@ class InstallCommand extends Command {
       log.verbose('search params', params);
       searchResult = await this.gitAPI.searchRepositories(params);
       count = 9999999;
+      
+      log.verbose('searchResult', searchResult);
+      
       list = searchResult.map(item => ({
         name: `${item.full_name}(${item.description})`,
         value: item.full_name
@@ -227,12 +204,12 @@ class InstallCommand extends Command {
     await this.doSearch()
   }
 
-  
+
   async nextPage() {
     this.page++
     await this.doSearch()
   }
-  
+
   async prevPage() {
     this.page--
     await this.doSearch()

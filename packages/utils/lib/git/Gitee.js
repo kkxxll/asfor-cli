@@ -1,5 +1,6 @@
 import axios from "axios"
 import { GitServer } from "./GitServer.js"
+import log from '../log.js'
 
 const BASE_URL = 'https://gitee.com/api/v5'
 
@@ -73,6 +74,7 @@ class Gitee extends GitServer {
   async createRepo(name) {
     // 检查远程仓库是否存在，如果存在，则跳过创建
     const repo = await this.getRepo(this.login, name);
+    log.verbose('create repo', this.login, name);
     if (!repo) {
       log.info('仓库不存在，开始创建');
       if (this.own === 'user') {

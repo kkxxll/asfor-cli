@@ -60,10 +60,40 @@ function getAddTeam(team) {
 // 通过API获取项目模板
 async function getTemplateFromAPI() {
   try {
-    const data = await request({
-      url: '/v1/project',
-      method: 'get',
-    });
+
+    // TODO 需要启动服务
+    // const data = await request({
+    //   url: '/v1/project',
+    //   method: 'get',
+    // });
+
+    const data = [
+      {
+        name: 'vue3',
+        npmName: '@asfor-cli/template-vue3',
+        value: 'template-vue3',
+        version: '0.0.1',
+        team: 'vue team',
+        ignore: [],
+      },
+      {
+        name: 'react18',
+        npmName: '@asfor-cli/template-react18',
+        value: 'template-react18',
+        version: '0.0.1',
+        team: 'react team',
+        ignore: [],
+      },
+      {
+        name: 'vue-admin',
+        npmName: '@asfor-cli/template-react18',
+        value: 'template-react18',
+        version: '0.0.1',
+        team: 'vue team',
+        ignore: [],
+      },
+    ];
+
     log.verbose('api template', data);
     return data;
   } catch (e) {

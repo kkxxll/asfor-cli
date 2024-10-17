@@ -32,6 +32,7 @@
     "@asfor-cli/init": "workspace:*",
     "@asfor-cli/utils": "workspace:*",
     "@asfor-cli/install": "workspace:*",
+    "@asfor-cli/commit": "workspace:*",
     "@asfor-cli/lint": "workspace:*",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",

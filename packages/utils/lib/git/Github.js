@@ -31,12 +31,20 @@ class Github extends GitServer {
       url,
       method: 'get',
       params,
-      headers
-    })
+      headers,
+    });
   }
 
-  post() {
-    
+  post(url, data, headers) {
+    return this.service({
+      url,
+      data,
+      params: {
+        access_token: this.token,
+      },
+      method: 'post',
+      headers,
+    });
   }
 
   searchRepositories(params) {
@@ -72,7 +80,10 @@ class Github extends GitServer {
 
   async createRepo(name) {
     const repo = await this.getRepo(this.login, name);
+    
+    log.verbose('repo', !repo)
     if (!repo) {
+      log.verbose('create repo', this.login, name);
       log.info('仓库不存在，开始创建');
       if (this.own === 'user') {
         return this.post('/user/repos', { name }, {

@@ -31,6 +31,8 @@ async function ejsRender(targetPath, installDir, template, name) {
   // 执行插件
   let data = {};
   const pluginPath = getPluginFilePath(targetPath, template);
+  
+  // TODO windows报错
   if (pathExistsSync(pluginPath)) {
     const pluginFn = (await import(pluginPath)).default;
     const api = {

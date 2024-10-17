@@ -3,19 +3,30 @@ import fs from 'node:fs'
 import { homedir } from 'node:os'
 import { pathExistsSync } from 'path-exists'
 import fse from 'fs-extra'
-import { makePassword } from '../inquirer.js'
+import { makePassword, makeList } from '../inquirer.js'
 import { execa } from 'execa'
 import log from '../log.js'
 
 const TEMP_HOME = '.asfor'
 const TEMP_TOKEN = '.token'
 const TEMP_PLATFORM = '.git_platform'
+const TEMP_OWN = '.git_own';
+const TEMP_LOGIN = '.git_login';
 
 function createTokenPath() {
     return path.resolve(homedir(), TEMP_HOME, TEMP_TOKEN)
 }
 function createPlatformPath() {
     return path.resolve(homedir(), TEMP_HOME, TEMP_PLATFORM)
+}
+
+
+function createOwnPath() {
+    return path.resolve(homedir(), TEMP_HOME, TEMP_OWN);
+}
+
+function createLoginPath() {
+    return path.resolve(homedir(), TEMP_HOME, TEMP_LOGIN);
 }
 
 function getGitPlatform() {
@@ -30,11 +41,37 @@ function getProjectPath(cwd, fullName) {
     return path.resolve(cwd, projectName);
 }
 
+
 function getPackageJson(cwd, fullName) {
     const projectPath = getProjectPath(cwd, fullName);
     const pkgPath = path.resolve(projectPath, 'package.json');
     if (pathExistsSync(pkgPath)) {
         return fse.readJsonSync(pkgPath);
+    }
+    return null;
+}
+
+function clearCache() {
+    const platform = createPlatformPath();
+    const token = createTokenPath();
+    const own = createOwnPath();
+    const login = createLoginPath();
+    fse.removeSync(platform);
+    fse.removeSync(token);
+    fse.removeSync(own);
+    fse.removeSync(login);
+}
+
+function getGitOwn() {
+    if (pathExistsSync(createOwnPath())) {
+        return fs.readFileSync(createOwnPath()).toString();
+    }
+    return null;
+}
+
+function getGitLogin() {
+    if (pathExistsSync(createLoginPath())) {
+        return fs.readFileSync(createLoginPath()).toString();
     }
     return null;
 }
@@ -78,8 +115,8 @@ class GitServer {
     }
 
     saveLogin(login) {
-        // this.login = login;
-        // fs.writeFileSync(createLoginPath(), login);
+        this.login = login;
+        fs.writeFileSync(createLoginPath(), login);
     }
 
 
@@ -130,20 +167,23 @@ class GitServer {
         }
     }
 
-    // getUser() {
-    //     throw new Error('getUser must be implemented!');
-    // }
+    getUser() {
+        throw new Error('getUser must be implemented!');
+    }
 
-    // getOrg() {
-    //     throw new Error('getOrg must be implemented!');
-    // }
+    getOrg() {
+        throw new Error('getOrg must be implemented!');
+    }
 
-    // createRepo() {
-    //     throw new Error('createRepo must be implemented!');
-    // }
+    createRepo() {
+        throw new Error('createRepo must be implemented!');
+    }
 }
 
 export {
     getGitPlatform,
-    GitServer
+    GitServer,
+    clearCache,
+    getGitOwn,
+    getGitLogin,
 }

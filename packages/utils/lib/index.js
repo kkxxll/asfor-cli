@@ -7,8 +7,8 @@ import { getLatestVersion } from "./npm.js";
 import request from "./request.js";
 import Github from "./git/Github.js";
 import Gitee from "./git/Gitee.js";
-import { getGitPlatform } from './git/GitServer.js'
-
+import { clearCache, getGitPlatform } from './git/GitServer.js'
+import { initGitServer, initGitType, createRemoteRepo } from './git/GitUtils.js';
 export function printErrorLog(e, type) {
   if (isDebug()) {
     log.error(type, e);
@@ -17,4 +17,5 @@ export function printErrorLog(e, type) {
   }
 }
 
-export { log, isDebug, makeList, makeInput, makePassword, getGitPlatform, getLatestVersion, request, Github, Gitee };
+
+export { log, isDebug, makeList, makeInput, createRemoteRepo, clearCache, makePassword, getGitPlatform, initGitType, initGitServer, getLatestVersion, request, Github, Gitee };
