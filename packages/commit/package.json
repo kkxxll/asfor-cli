@@ -28,6 +28,7 @@
     "@asfor-cli/utils": "workspace:*",
     "fs-extra": "^11.2.0",
     "ora": "^8.1.0",
+    "semver": "^7.6.3",
     "simple-git": "^3.27.0"
   },
   "type": "module"
