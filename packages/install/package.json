@@ -24,6 +24,8 @@
     "url": "https://github.com/kkxxll/asfor-cli/issues"
   },
   "dependencies": {
+    "@asfor-cli/command": "workspace:*",
+    "@asfor-cli/utils": "workspace:*",
     "ora": "^8.1.0"
   }
 }

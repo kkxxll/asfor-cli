@@ -71,6 +71,18 @@ importers:
       '@asfor-cli/utils':
         specifier: workspace:*
         version: link:../utils
+      fs-extra:
+        specifier: ^11.2.0
+        version: 11.2.0
+      ora:
+        specifier: ^8.1.0
+        version: 8.1.0
+      semver:
+        specifier: ^7.6.3
+        version: 7.6.3
+      simple-git:
+        specifier: ^3.27.0
+        version: 3.27.0
 
   packages/init:
     dependencies:
@@ -101,6 +113,12 @@ importers:
 
   packages/install:
     dependencies:
+      '@asfor-cli/command':
+        specifier: workspace:*
+        version: link:../command
+      '@asfor-cli/utils':
+        specifier: workspace:*
+        version: link:../utils
       ora:
         specifier: ^8.1.0
         version: 8.1.0
@@ -949,6 +967,12 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@kwsites/file-exists@1.1.1':
+    resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
+
+  '@kwsites/promise-deferred@1.1.1':
+    resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
 
   '@lerna/create@8.1.8':
     resolution: {integrity: sha512-wi72R01tgjBjzG2kjRyTHl4yCTKDfDMIXRyKz9E/FBa9SkFvUOAE4bdyY9MhEsRZmSWL7+CYE8Flv/HScRpBbA==}
@@ -3483,6 +3507,9 @@ packages:
     resolution: {integrity: sha512-8G+/XDU8wNsJOQS5ysDVO0Etg9/2uA5gR9l4ZwijjlwxBcrU6RPfwi2+jJmbP+Ap1Hlp/nVAaEO4Fj22/SL2gQ==}
     engines: {node: ^16.14.0 || >=18.0.0}
 
+  simple-git@3.27.0:
+    resolution: {integrity: sha512-ivHoFS9Yi9GY49ogc6/YAi3Fl9ROnF4VyubNylgCkA+RVqLaKWnDSzXOVzya8csELIaWaYNutsEuAhZrtOjozA==}
+
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
@@ -5062,6 +5089,14 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@kwsites/file-exists@1.1.1':
+    dependencies:
+      debug: 4.3.7(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@kwsites/promise-deferred@1.1.1': {}
 
   '@lerna/create@8.1.8(encoding@0.1.13)(typescript@5.6.2)':
     dependencies:
@@ -8172,6 +8207,14 @@ snapshots:
       '@sigstore/sign': 2.3.2
       '@sigstore/tuf': 2.3.4
       '@sigstore/verify': 1.2.1
+    transitivePeerDependencies:
+      - supports-color
+
+  simple-git@3.27.0:
+    dependencies:
+      '@kwsites/file-exists': 1.1.1
+      '@kwsites/promise-deferred': 1.1.1
+      debug: 4.3.7(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
 
