@@ -16,8 +16,8 @@ const ADD_TEMPLATE = [
   },
   {
     name: 'vue-admin',
-    npmName: '@asfor-cli/template-react18',
-    value: 'template-react18',
+    npmName: '@asfor-cli/vue2-admin-template',
+    value: 'vue2-admin-template',
     version: '0.0.1',
   },
 ];

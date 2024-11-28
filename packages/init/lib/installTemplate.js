@@ -41,12 +41,28 @@ async function ejsRender(targetPath, installDir, template, name) {
     }
     data = await pluginFn(api);
   }
+
+
+
   const ejsData = {
     data: {
       name, // 项目名称
       ...data,
+    },
+    BASE_URL: 'test',
+    webpackConfig: {
+      name: '123'
+    },
+    htmlWebpackPlugin: {
+      options: {
+        title: 'title',
+      }
     }
   }
+
+  log.verbose('ejsRenderData', ejsData);
+
+
   glob('**', {
     cwd: installDir,
     nodir: true,
